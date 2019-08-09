@@ -1,0 +1,12 @@
+{
+  "name": "workoutlog",
+  "version": "1.0.0",
+  "description": "efa express, sequelize, node, js, html, css, and MVC tutorial",
+  "main": "01-scripts.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "efa",
+  "license": "MIT",
+  "dependencies": {}
+}
