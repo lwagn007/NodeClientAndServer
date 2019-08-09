@@ -3,37 +3,42 @@ var express = require("express");
 // anything accessed through the variable router is a express method. 
 var router = express.Router();
 
-var sequelize = require("../db");
-
-//anything accessed through variable User is a sequelize method.
-var User = sequelize.import("../models/user.js");
-
-var bcrypt = require("bcryptjs");
-
-var jwt = require("jsonwebtoken");
+var UserService = require("../middleware/userservice");
 
 router.post("/createuser", function (request, response) {
-    var username = request.body.user.username;
-    var password = request.body.user.password;
 
-    User.create({
-        username: username,
-        passwordHash: bcrypt.hashSync(password, 10)
-    }).then(
-        function createSuccess(user) {
+    let service = new UserService;
 
-            var token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 24 });
+    let user = service.createUser(request.body);
 
-            response.json({
-                user: user,
-                message: "created",
-                sessionToken: token
-            });
-        },
-        function createError(error) {
-            response.send(500, error.message);
+    console.log(JSON.stringify(user));
+
+    if (user !== null) {
+        response.json(user);
+    } else {
+        function createError(error){
+            response.status(500).send(error.message);
         }
-    );
+    }
+
+    // User.create({
+    //     username: username,
+    //     passwordHash: bcrypt.hashSync(password, 10)
+    // }).then(
+    //     function createSuccess(user) {
+
+    //         var token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 24 });
+
+    //         response.json({
+    //             user: user,
+    //             message: "created",
+    //             sessionToken: token
+    //         });
+    //     },
+    //     function createError(error) {
+    //         response.send(500, error.message);
+    //     }
+    // );
 });
 
 router.post("/login", function (request, response) {
